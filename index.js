@@ -54,11 +54,11 @@ server.use(bodyParser.json());
 
 
 //start server
-mongoose.connect("mongodb+srv://ntungwe:pose2011990@cluster0.k48si.mongodb.net/bank?retryWrites=true&w=majority",
+mongoose.connect("mongodb+srv://ntungwe:pose201@cluster0.k48si.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
     
 {useNewUrlParser: true,
  useUnifiedTopology: true
 }).then(result => {
-    server.listen(3005,()=> console.log('server is  finally ready'))
+    server.listen(3005,()=> console.log('server is  finally ready ooooo'))
 }).catch (err => console.log(err))
 

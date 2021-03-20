@@ -1,16 +1,40 @@
-//Bank Model
-const mongoose =require("mongoose")
-const {Schema}=mongoose
-const BankSchema = new mongoose.Schema({
-    name:String,
-    location:String,
-    branch:String,
-    address:String,
-    phone:String,
-    accounts:[{type:Schema.Types.ObjectId,ref:"Account"}]
+//Import mongoose
+const mongoose = require("mongoose");
 
-})
+const Schema = mongoose.Schema;
+const BankSchema = new Schema({
+  name: {
+    type: String,
+  },
+  branch: {
+    type: String,
+  },
 
-const BankModel = mongoose.model("Bank",BankSchema)
+  address: {
+    type: String,
+  },
 
-module.exports=BankModel;
+  location: {
+    type: String,
+  },
+
+  phone: {
+    type: String,
+  },
+
+  accountNumber: {
+    type: String,
+  },
+
+  accounts: [
+    {
+      accountsId: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: "Account",
+      },
+    },
+  ],
+});
+
+const BankModel = mongoose.model("Bank", BankSchema);
