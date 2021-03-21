@@ -1,29 +1,32 @@
-const express = require('express');
+const express = require("express");
+
 const { body } = require("express-validator");
 
-const {
-    createAccountController,
-    listAccountController,
-
-} = require("../controllers/accountControllers");
-
 const router = express.Router();
-router.post(
-    "/account",
-    [
-        body("accountName").not().isEmpty().withMessage("accountName is required"),
-        body("accountNumber")
-        .not()
-        .isEmpty()
-        .withMessage("accountNumber is required"),
-    ],
-    createAccountController
-);
-router.get("/account", listAccountController);
-module.exports = router;
-// const router = express.Router();
-// const {createAccountController,listAccountController} = require('../controllers/accountControllers')
 
-// router.post('/account',createAccountController);
-// router.get('/accounts',listAccountController)
-// module.exports = router;
+const {
+  createAccountController,
+  listAccountController,
+  deleteAccountController,
+} = require("../controllers/accountController");
+
+router.post(
+  "/account",
+  [
+    body("accountName").notEmpty().withMessage("accountName is required"),
+    body("accountNumber")
+      .notEmpty()
+      .withMessage("accountNumber is required")
+      .isNumeric()
+      .withMessage("accountNumber is figures")
+      .isLength()
+      .withMessage({ min: 12, max: 12 }),
+  ],
+  createAccountController
+);
+
+router.get("/account/:id?", listAccountController);
+
+router.delete("/account/:id?", deleteAccountController);
+
+module.exports = router;

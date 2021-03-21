@@ -1,44 +1,31 @@
 const UserModel = require("../models/userModel");
+const bcrypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
-const { findOne } = require("../models/userModel");
 
-const createUserController = async (req, res) => {
-  const { userName, email, password } = req.body;
+const createUserController = (req, res) => {
+  const { username, email, password } = req.body;
+
+  // Finds the validation errors in this request and wraps them in an object with handy functions
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  try {
-   const exists = UserModel.findOne({email: email})
-   if (exists) {
-       return res.status(400).json({ message:"Email already exists"})
-   }
-       
-    const bcrypt = require("bcryptjs");
-    const salt = bcrypt.genSaltSync(13);
-    const hash = bcrypt.hashSync(password, salt);
-    const user = await new UserModel({
-      userName,
-      email,
-      password: hash,
-    }).save();
-    res.status(201).json({ message: "User created!", data: result });
-  } catch (error) {
-      console.log(error)
-    res.status(500).json({ message: "Failed to create user", error: error });
-  }
+
+  bcrypt.hash(password, 10).then((hashedPassword) => {
+    const user = new UserModel({ username, email, password: hashedPassword });
+
+    user
+      .save()
+      .then((result) => {
+        if (result) {
+          res
+            .status(201)
+            .json({ message: "User created successfully!", data: result });
+        } else res.json({ message: "Failed to create User" });
+      })
+      .catch((error) => console.log(error))
+      .catch((err) => console.log(err));
+  });
 };
 
-const viewUserController = (req, res) => {
-  UserModel.find()
-    .populate("account", "userName, email, password")
-    .then((users) => {
-      res.json({ data: users });
-    })
-    .catch((err) => console.log(err));
-};
-
-module.exports = {
-  createUserController,
-  viewUserController,
-};
+module.exports = { createUserController };
